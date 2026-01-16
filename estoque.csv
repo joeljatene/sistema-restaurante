@@ -3,3 +3,4 @@ id,nome,unidade,qtd_atual,qtd_minima,preco_medio,validade,total,validade_dt
 2,Feijão Carioca,kg,10.0,10.0,5.0,2026-01-16,25.0,2026-01-16
 3,Ovos,cx,1.0,2.0,0.0,2026-01-16,0.0,2026-01-16
 4,Alho,un,10.0,5.0,0.0,2026-01-16,,
+5,Óleo de soja,lt,10.0,5.0,0.0,2026-01-16,,
