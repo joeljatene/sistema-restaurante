@@ -6,7 +6,7 @@ from datetime import datetime, date
 from fpdf import FPDF
 
 # --- 1. CONFIGURAÇÃO ---
-st.set_page_config(page_title="Sistema Restaurante V8.0", layout="wide", page_icon="👨‍🍳")
+st.set_page_config(page_title="Sistema Restaurante V8.1", layout="wide", page_icon="👨‍🍳")
 
 # --- 2. FUNÇÕES PDF ---
 class PDF(FPDF):
@@ -235,7 +235,7 @@ if login():
                     st.success("Excluído.")
                     st.rerun()
 
-    # --- ABA 4: FICHAS TÉCNICAS (ATUALIZADA) ---
+    # --- ABA 4: FICHAS TÉCNICAS (CORRIGIDA) ---
     elif menu == "👨‍🍳 Fichas & Cardápios":
         st.title("Planejamento de Cardápio")
         
@@ -315,13 +315,12 @@ if login():
                         st.session_state['temp_ingredientes'] = []
                         st.rerun()
 
-        # --- SUB-ABA 3: GERENCIAR (NOVA!) ---
+        # --- SUB-ABA 3: GERENCIAR (CORRIGIDA) ---
         with tab_gerenciar:
             st.subheader("Editar ou Excluir Receitas")
             df_f = st.session_state['df_fichas']
             
             if not df_f.empty:
-                # 1. Filtro para encontrar o prato
                 filtro_cardapio = st.selectbox("Filtrar por Cardápio:", ["Todos"] + list(df_f['cardapio'].unique()))
                 
                 if filtro_cardapio != "Todos":
@@ -331,53 +330,45 @@ if login():
                 
                 prato_selecionado = st.selectbox("Selecione o Prato:", view_df['prato'].unique())
                 
-                # Mostra os ingredientes do prato selecionado
                 detalhes_prato = view_df[view_df['prato'] == prato_selecionado]
-                st.info(f"Ingredientes da **{prato_selecionado}** ({filtro_cardapio if filtro_cardapio != 'Todos' else 'Vários Cardápios'})")
+                st.info(f"Ingredientes da **{prato_selecionado}**")
                 st.dataframe(detalhes_prato[['cardapio', 'ingrediente', 'qtd_necessaria']], use_container_width=True)
                 
                 st.markdown("---")
-                
-                # ÁREA DE EDIÇÃO E EXCLUSÃO
                 col_edit, col_del = st.columns(2)
                 
-                # --- COLUNA 1: EDITAR ---
                 with col_edit:
                     st.markdown("#### ✏️ Editar Ingrediente")
-                    ing_edit = st.selectbox("Escolha o Ingrediente para alterar:", details_prato = detalhes_prato['ingrediente'].unique())
+                    # AQUI ESTAVA O ERRO - CORRIGIDO
+                    ing_edit = st.selectbox("Escolha o Ingrediente para alterar:", detalhes_prato['ingrediente'].unique())
                     
-                    # Pega a qtd atual
-                    qtd_atual = detalhes_prato[detalhes_prato['ingrediente'] == ing_edit]['qtd_necessaria'].values[0]
-                    nova_qtd = st.number_input("Nova Quantidade:", value=float(qtd_atual), min_value=0.1, step=0.1)
-                    
-                    if st.button("Atualizar Quantidade"):
-                        # Localiza e atualiza
-                        idx = df_f.index[(df_f['prato'] == prato_selecionado) & (df_f['ingrediente'] == ing_edit) & (df_f['cardapio'].isin(detalhes_prato['cardapio']))].tolist()
-                        for i in idx:
-                            st.session_state['df_fichas'].at[i, 'qtd_necessaria'] = nova_qtd
+                    # Verifica se o ingrediente existe no dataframe filtrado antes de acessar
+                    if ing_edit:
+                        qtd_atual = detalhes_prato[detalhes_prato['ingrediente'] == ing_edit]['qtd_necessaria'].values[0]
+                        nova_qtd = st.number_input("Nova Quantidade:", value=float(qtd_atual), min_value=0.1, step=0.1)
                         
-                        salvar_dados("fichas.csv", st.session_state['df_fichas'], "Edição Ficha")
-                        st.success("Atualizado!")
-                        st.rerun()
+                        if st.button("Atualizar Quantidade"):
+                            idx = df_f.index[(df_f['prato'] == prato_selecionado) & (df_f['ingrediente'] == ing_edit) & (df_f['cardapio'].isin(detalhes_prato['cardapio']))].tolist()
+                            for i in idx:
+                                st.session_state['df_fichas'].at[i, 'qtd_necessaria'] = nova_qtd
+                            
+                            salvar_dados("fichas.csv", st.session_state['df_fichas'], "Edição Ficha")
+                            st.success("Atualizado!")
+                            st.rerun()
 
-                # --- COLUNA 2: EXCLUIR ---
                 with col_del:
                     st.markdown("#### 🗑️ Exclusão")
-                    
                     with st.expander("Opções de Exclusão"):
-                        # Opção A: Excluir só um ingrediente
-                        if st.button("Excluir APENAS o ingrediente selecionado ao lado"):
-                            # Filtra tudo MENOS o ingrediente selecionado naquele prato
-                            novo_df = df_f[~((df_f['prato'] == prato_selecionado) & (df_f['ingrediente'] == ing_edit))]
-                            st.session_state['df_fichas'] = novo_df
-                            salvar_dados("fichas.csv", novo_df, "Exclusão Ingrediente")
-                            st.success("Ingrediente removido!")
-                            st.rerun()
+                        if st.button("Excluir APENAS o ingrediente selecionado"):
+                            if ing_edit:
+                                novo_df = df_f[~((df_f['prato'] == prato_selecionado) & (df_f['ingrediente'] == ing_edit))]
+                                st.session_state['df_fichas'] = novo_df
+                                salvar_dados("fichas.csv", novo_df, "Exclusão Ingrediente")
+                                st.success("Ingrediente removido!")
+                                st.rerun()
                         
                         st.divider()
-                        
-                        # Opção B: Excluir o prato todo
-                        st.markdown(f"**Cuidado:** Isso apagará a receita completa de **{prato_selecionado}**.")
+                        st.markdown(f"**Apagar receita de {prato_selecionado}?**")
                         if st.button("🚨 EXCLUIR PRATO INTEIRO", type="primary"):
                             novo_df = df_f[df_f['prato'] != prato_selecionado]
                             st.session_state['df_fichas'] = novo_df
