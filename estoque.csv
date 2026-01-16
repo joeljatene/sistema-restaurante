@@ -4,4 +4,5 @@ id,nome,unidade,qtd_atual,qtd_minima,preco_medio,validade,total,validade_dt
 3,Ovos,cx,1.0,2.0,0.0,2026-01-16,0.0,2026-01-16
 4,Alho,un,10.0,5.0,0.0,2026-01-16,0.0,
 5,Óleo de soja,lt,10.0,5.0,0.0,2026-01-16,0.0,
-6,Alcatra,kg,15.0,5.0,42.0,2026-01-16,0.0,
+6,Alcatra,kg,15.0,5.0,42.0,2026-01-16,630.0,
+7,Macarrão espagheti,kg,1.0,2.0,0.0,2026-01-16,,
