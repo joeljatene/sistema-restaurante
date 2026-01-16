@@ -2,3 +2,4 @@ id,nome,unidade,qtd_atual,qtd_minima,preco_medio,validade,total,validade_dt
 1,Arroz Branco,kg,5.0,5.0,3.5,2026-01-16,17.5,2026-01-16
 2,Feijão Carioca,kg,10.0,10.0,5.0,2026-01-16,25.0,2026-01-16
 3,Ovos,cx,1.0,2.0,0.0,2026-01-16,0.0,2026-01-16
+4,Alho,un,10.0,5.0,0.0,2026-01-16,,
