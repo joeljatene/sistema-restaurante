@@ -395,5 +395,3 @@ if login():
             )
         else:
             st.warning("Cadastre produtos para gerar relatório.")
-
-```
