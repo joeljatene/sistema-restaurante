@@ -1,22 +1,3 @@
-Essa é uma percepção fantástica, Joel. Na versão anterior, o trabalho era "de formiguinha" (um por um). Para um prato como uma Feijoada, que leva 10 ingredientes, era cansativo.
-
-Vamos criar a **Versão 7.0**.
-
-### O que mudou?
-
-Criei uma lógica de **"Carrinho de Ingredientes"**. Funciona assim:
-
-1. Você digita o nome do prato **uma vez só** (ex: "Feijoada").
-2. Vai adicionando os ingredientes numa lista temporária (Feijão, Carne Seca, Paio...).
-3. No final, clica num botão **"💾 Salvar Receita Completa"** e o sistema grava tudo de uma vez.
-
----
-
-### Código Completo (Versão 7.0)
-
-Copie e substitua todo o seu `app.py`.
-
-```python
 import streamlit as st
 import pandas as pd
 from github import Github
